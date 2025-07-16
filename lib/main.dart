@@ -24,7 +24,6 @@ class MyApp extends StatelessWidget {
   }
 
   Widget _getScreen(RouteSettings settings) {
-    // Προσθήκη routing logic αν χρειαστεί
     return CategorySelectionScreen();
   }
 }

@@ -38,7 +38,6 @@ final ThemeData appTheme = ThemeData(
       color: Colors.white,
     ),
   ),
-
   extensions: <ThemeExtension<dynamic>>[
     CustomColors(
       backgroundGradient: LinearGradient(
@@ -55,7 +54,7 @@ class CustomColors extends ThemeExtension<CustomColors> {
   CustomColors({required this.backgroundGradient});
 
   @override
-  ThemeExtension<CustomColors> copyWith({LinearGradient? backgroundGradient}) {
+  CustomColors copyWith({LinearGradient? backgroundGradient}) {
     return CustomColors(
       backgroundGradient: backgroundGradient ?? this.backgroundGradient,
     );
