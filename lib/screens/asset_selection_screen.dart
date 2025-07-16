@@ -11,18 +11,11 @@ class AssetSelectionScreen extends StatefulWidget {
 
 class _AssetSelectionScreenState extends State<AssetSelectionScreen> {
   String? selectedAsset;
-  String? selectedRange;
-  bool showChart = false; // Έλεγχος εμφάνισης γραφήματος
+  String selectedRange = '1H';
 
   final List<String> stockIndexes = ['S&P500', 'NASDAQ', 'FTSE 100', 'DAX'];
   final List<String> cryptos = ['Bitcoin', 'Ethereum', 'Cardano', 'Solana'];
   final List<String> timeRanges = ['1H', '24H', '7d', '1M', '6M'];
-
-  @override
-  void initState() {
-    super.initState();
-    selectedRange = timeRanges.first;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +23,8 @@ class _AssetSelectionScreenState extends State<AssetSelectionScreen> {
     final category = widget.isCrypto ? 'Κρυπτονομίσματα' : 'Δείκτες';
     final screenHeight = MediaQuery.of(context).size.height;
 
-    bool canShowChart = selectedAsset != null && selectedRange != null;
-
     return SharedScaffold(
-      title: '$category',
+      title: 'Επιλογή $category',
       child: Container(
         color: Colors.transparent,
         child: SingleChildScrollView(
@@ -44,12 +35,13 @@ class _AssetSelectionScreenState extends State<AssetSelectionScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'Επιλέξτε Asset:',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    textAlign: TextAlign.center,
+                  Center(
+                    child: Text(
+                      'Επιλέξτε Asset:',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     value: selectedAsset,
                     hint: Text(
@@ -82,88 +74,36 @@ class _AssetSelectionScreenState extends State<AssetSelectionScreen> {
                       );
                     }).toList(),
                     onChanged: (value) {
-                      setState(() {
-                        selectedAsset = value;
-                        showChart =
-                            false; // reset εμφάνιση chart όταν αλλάζει το asset
-                      });
+                      setState(() => selectedAsset = value);
                     },
                   ),
-
                   const SizedBox(height: 24),
-
-                  Text(
-                    'Χρονικό Διάστημα:',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    textAlign: TextAlign.center,
+                  Center(
+                    child: Text(
+                      'Χρονικό Διάστημα:',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ),
                   const SizedBox(height: 12),
-
-                  DropdownButtonFormField<String>(
-                    value: selectedRange,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.2),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.4),
-                        ),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                    ),
-                    dropdownColor: Colors.white,
-                    iconEnabledColor: Colors.white,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyLarge?.copyWith(color: Colors.black),
-                    items: timeRanges.map((range) {
-                      return DropdownMenuItem<String>(
-                        value: range,
-                        child: Text(range),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedRange = value;
-                        showChart =
-                            false; // reset εμφάνιση chart όταν αλλάζει το range
-                      });
-                    },
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: timeRanges
+                        .map((range) => _buildIOSButton(range))
+                        .toList(),
                   ),
-
                   const SizedBox(height: 30),
-
-                  ElevatedButton(
-                    onPressed: canShowChart
-                        ? () {
-                            setState(() {
-                              showChart = true;
-                            });
-                          }
-                        : null,
-                    child: Text('Εμφάνιση Γραφήματος'),
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 14,
-                      ),
-                      textStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                  if (selectedAsset != null)
+                    _buildIOSButton(
+                      'Εμφάνιση Γραφήματος',
+                      isFullWidth: true,
+                      onTap: () {
+                        // Εμφάνιση γραφήματος
+                      },
                     ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  if (showChart)
+                  const SizedBox(height: 20),
+                  if (selectedAsset != null)
                     Container(
                       width: double.infinity,
                       height: 300,
@@ -177,9 +117,8 @@ class _AssetSelectionScreenState extends State<AssetSelectionScreen> {
                       padding: const EdgeInsets.all(20),
                       child: Center(
                         child: Text(
-                          '📈 Το γράφημα για το $selectedAsset με χρονικό διάστημα $selectedRange θα εμφανιστεί εδώ',
+                          '📈 Το γράφημα θα εμφανιστεί εδώ',
                           style: Theme.of(context).textTheme.bodyLarge,
-                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
@@ -187,6 +126,39 @@ class _AssetSelectionScreenState extends State<AssetSelectionScreen> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIOSButton(
+    String label, {
+    bool isFullWidth = false,
+    VoidCallback? onTap,
+  }) {
+    final bool isSelected = label == selectedRange;
+
+    return SizedBox(
+      width: isFullWidth ? double.infinity : 100,
+      child: OutlinedButton(
+        onPressed:
+            onTap ??
+            () {
+              setState(() => selectedRange = label);
+            },
+        style: OutlinedButton.styleFrom(
+          backgroundColor: isSelected ? Colors.white : Colors.transparent,
+          foregroundColor: isSelected ? Colors.black : Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          side: BorderSide(color: Colors.white.withOpacity(0.5), width: 1.2),
+        ),
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
         ),
       ),
     );

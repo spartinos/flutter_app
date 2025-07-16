@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final ThemeData appTheme = ThemeData(
-  primaryColor: Color(0xFF1E3A8A),
+  primaryColor: Color(0xFF6C6444), // ΝΕΟ ΧΡΩΜΑ
   scaffoldBackgroundColor: Color(0xFFF9FAFB),
   appBarTheme: AppBarTheme(
     backgroundColor: Colors.transparent,
@@ -41,7 +41,10 @@ final ThemeData appTheme = ThemeData(
   extensions: <ThemeExtension<dynamic>>[
     CustomColors(
       backgroundGradient: LinearGradient(
-        colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6)],
+        colors: [
+          Color(0xFF747048), // ΝΕΟ ΧΡΩΜΑ
+          Color(0xFF9A9569), // Μπορείς να αλλάξεις αυτό για πιο φυσική μετάβαση
+        ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
