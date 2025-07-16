@@ -5,8 +5,7 @@ class PredictionScreen extends StatelessWidget {
   final String index;
   final String range;
 
-  const PredictionScreen({Key? key, required this.index, required this.range})
-    : super(key: key);
+  const PredictionScreen({super.key, required this.index, required this.range});
 
   @override
   Widget build(BuildContext context) {
